@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block content %}   
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul>
+      {% for category, message in messages %}
+        <li class="{{ category }} text-light">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %} 
+   
+<div class="container-flex">
+  <main class="column-1 text-light">
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="static/images/collaborative.jpg" alt="" width="200" height="200">
+      <h2>Cafe Details Form</h2>
+      <p class="lead">Please fill out as many details as you know; this is a collaborative website and other members may complement your information.</p>
+    </div>
+
+    <div class="row g-5 px-5">
+      <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">Cafe Details</h4>
+        <form class="needs-validation" action="{{ url_for('add_cafe')}}" method="post" novalidate>
+          <div class="row g-3">
+            <div class="col-8">
+              <label for="name" class="form-label">Name</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Cafe Name" required>
+              <div class="invalid-feedback">
+                  Cafe name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="map_url" class="form-label">Map URL Address <span class="text-light">(Optional)</span></label>
+              <input type="text" class="form-control" name="map_url" id="map_url" placeholder="https://www.google.com/maps">
+              <div class="invalid-feedback">
+                Please enter a valid map URL.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="img_url" class="form-label">Cafe Image Address <span class="text-light">(Optional)</span></label>
+              <input type="text" class="form-control"  name="img_url" id="img_url" placeholder="https://www.google.com" required>
+              <div class="invalid-feedback">
+                Please enter a valid image address.
+              </div>
+            </div>
+
+            <div class="col-8">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" class="form-control"  name="location" id="location" placeholder="London Bridge">
+            </div>
+
+            <div class="col-8">
+              <label for="coffee_price" class="form-label">Coffee Price (numbers only)</label>
+              <input type="text" class="form-control" name="coffee_price" id="coffee_price" placeholder="&#163 2.50">
+            </div>
+          
+          </div>
+
+          <hr class="my-4">
+          <h4 class="mb-3">Check what is available</h4>
+
+          <!-- Checkboxes -->
+          <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" 
+                type="checkbox" 
+                name="has_sockets" 
+                id="has_sockets">
+                <label class="form-check-label" for="has_sockets">Sockets</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" 
+                type="checkbox" 
+                name="has_toilet" 
+                id="has_toilet">
+                <label class="form-check-label" for="has_toilet">Toilet</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" 
+                type="checkbox" 
+                name="has_wifi" 
+                id="has_wifi">
+                <label class="form-check-label" for="has_wifi">WiFi</label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" 
+              type="checkbox" 
+              name="can_take_calls" 
+              id="can_take_calls">
+              <label class="form-check-label" for="can_take_calls">Take Calls</label>
+          </div>
+
+        </div>
+
+          <hr class="my-4">
+
+          <h4 class="mb-3">Choose a range for the number of seats</h4>
+          <!-- Dropdown -->
+          <div class="mb-3 col-8 ">
+            <select class="form-select" name="seats" id="seats">
+              <option value="any" >Any</option>
+              <option value="0-10" >10 or less</option>
+              <option value="10-20" >10-20</option>
+              <option value="20-30" >20-30</option>
+              <option value="30-40" >30-40</option>
+              <option value="40-50" >40-50</option>
+              <option value="50+" >50+</option>
+            </select>
+          </div>
+
+          <hr class="my-4">
+          <div class="text-center pb-3">
+            <button class="w-50 btn btn-primary btn-lg text-center" type="submit">Submit New Cafe Data</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}

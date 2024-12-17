@@ -1,0 +1,36 @@
+.navbar-bg {
+    background-color: #D4EBF8
+}
+.btn-custom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1rem; /* Adjust padding as needed */
+}
+
+.btn-custom i {
+    margin-right: 1.0rem; /* Space between icon and text */
+}
+.column-1 {
+    background-color: #0A3981;
+}
+.column-2 {
+    background-color: #1F509A;
+}
+.column-3 {
+    background-color: #0A3981;
+}
+.row-no-gap {
+    margin: 0;
+    padding: 0;
+}
+.container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.col {
+    padding-left: 1.5rem; /* 16px */
+}
+
+
+

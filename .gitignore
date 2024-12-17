@@ -1,0 +1,32 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+.venv/
+venv/
+
+# Ignore logs and databases
+*.log
+*.sqlite3
+
+# Ignore environment variables
+.env
+.env.*
+
+# Ignore VSCode settings
+.vscode/
+*.code-workspace
+
+# Ignore dependencies
+Pipfile
+Pipfile.lock
+*.egg-info/
+dist/
+build/
+
+# Ignore system files
+Thumbs.db
+.DS_Store

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid px-3 d-flex flex-grow-1">
+    <div class="row row-cols-3 flex-grow-1 ">
+        <!-- First Column: Filter Criteria -->
+        <div class="col-md-3 align-items-center column-1 ps-4 ">
+            <h4 class="py-3 text-light">Filter Criteria</h4>
+            <p for="locationDropdown" class="form-label text-light">Select a Location</p>
+            <form method="POST" action="{{ url_for('home') }}" id="form1">
+
+                <!-- Dropdown for Location -->
+                <div class="mb-3">
+                    <select class="form-select" name="location" id="locationDropdown" onchange="this.form.submit()">
+                        <option {% if not filter["location"] %}selected{% endif %}>
+                            All locations...</option>
+                        {% for cafe in location_list %}
+                        <option value="{{ cafe }}" {% if filter["location"] == cafe %} selected {% endif %}>
+                            {{ cafe }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="form-label text-light">Must Have...</p>
+                <!-- Filter Section -->
+                <!-- <form method="POST", action="{{ url_for('home' )}}">  -->
+                <div class="d-flex flex-column align-items-start text-light">
+                    <!-- Checkboxes -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                            type="checkbox" 
+                            name="sockets" 
+                            id="sockets" 
+                            onchange="this.form.submit()" 
+                            {% if filter["has_sockets"] %} checked {% endif %}>
+                            <label class="form-check-label" for="sockets">Sockets</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                            type="checkbox" 
+                            name="toilet" 
+                            id="toilet" 
+                            onchange="this.form.submit()"
+                            {% if filter["has_toilet"] %} checked {% endif %}>
+                            <label class="form-check-label" for="toilet">Toilet</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                            type="checkbox" 
+                            name="wifi" 
+                            id="wifi" 
+                            onchange="this.form.submit()"
+                            {% if filter["has_wifi"] %} checked {% endif %}>
+                            <label class="form-check-label" for="wifi">WiFi</label>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="mb-3">
+                        <label class="form-label" for="dropdownFilter">Number of Seats</label>
+                        <select class="form-select" name="seats" id="seats" onchange="this.form.submit();">
+                            <option value="any" {% if filter["seats"] == "any" %}selected{% endif %}>Any</option>
+                            <option value="0-10" {% if filter["seats"] == "0-10" %}selected{% endif %}>10 or less</option>
+                            <option value="10-20" {% if filter["seats"] == "10-20" %}selected{% endif %}>10-20</option>
+                            <option value="20-30" {% if filter["seats"] == "20-30" %}selected{% endif %}>20-30</option>
+                            <option value="30-40" {% if filter["seats"] == "30-40" %}selected{% endif %}>30-40</option>
+                            <option value="40-50" {% if filter["seats"] == "40-50" %}selected{% endif %}>40-50</option>
+                            <option value="50+" {% if filter["seats"] == "50+" %}selected{% endif %}>50+</option>
+                        </select>
+                    </div>
+
+                    <!-- Range Slider -->
+                    <div class="mb-3">
+                        <label for="coffee_price" class="form-label">Coffee Price Less Than or equal to:</label>
+                        <input 
+                        type="range" 
+                        class="form-range" 
+                        name="coffee_price"
+                        id="coffee_price" 
+                        min="{{ cafe_price_range[0] }}" 
+                        max="{{ cafe_price_range[-1] }}" 
+                        step="0.10" 
+                        value="{{ filter["coffee_price"] }}"
+                        onchange="this.form.submit();">
+                        <div class="d-flex justify-content-between">
+                            {% for f in cafe_price_range %}
+                            <span>{{ currency }} {{ f|round(2) }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <span id="coffee_price">Selected Value: {{ currency }}{{ filter["coffee_price"] }}</span>
+                        </div>
+                    </div>
+                </div>    
+            </form>
+        </div>
+
+        <!-- Second Column: Location Details -->
+        <div class="col-md-6 align-items-center column-2">
+            <!-- Header for Location -->
+            <div class="mb-0 pb-3">
+                <h4 id="locationHeader" class="py-3 text-light">Cafe List ({{ nbr_options }} options)</h4>
+                <p id="locationLabel" class="text-light">Based on your neighborhood selection.</p>
+            </div>
+            <!-- Dynamic Rows -->
+            <div id="dynamicRows" class="row row-no-gap border" style="max-height: 70vh; overflow-y: auto;">
+                <form class="row-no-gap" method="POST" action="{{ url_for('home') }}" id="form2">
+                    <!-- List of filtered Cafes -->
+                    {% for cafe in selected_cafe_list %}
+                    <div class="border py-2 " >
+                        <!-- Flex container for the content -->
+                        <div class="d-flex flex-wrap align-items-center px-3 ">
+                            <!-- Image on the left -->
+                            <img src="{{ cafe['img_url'] }}" class="img-fluid me-3" style="width: 100px; height: 100px;">
+                            <!-- Content on the right -->
+                            <div class="flex-grow-1 text-light">
+                                <!-- Name and Location Lables -->
+                                <div> 
+                                <h6>{{ cafe["name"] }} - {{ cafe["location"] }}</h6>
+                                </div>
+                                <!-- Radio Button for Cafe Selection -->
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                    type="radio" 
+                                    name="cafe_selection" 
+                                    value="{{ cafe['id'] }}" 
+                                    id="{{ cafe['id'] }}"
+                                    {% if selected_cafe_id == cafe["id"] %} checked {% endif %} 
+                                    onchange="document.getElementById('form2').submit()">
+                                    <label class="form-check-label" for="{{ cafe['id'] }}">
+                                    Map
+                                    </label>
+                                </div> 
+                                <!-- Icons container -->
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <div class="d-flex align-items-center me-4">
+                                        <i class="bi bi-plug-fill me-1"></i>
+                                        <i class="{% if cafe['has_sockets'] %} bi bi-check-lg text-success {% else %}bi bi-x-square text-danger{% endif %}"></i>
+                                    </div>    
+                                    <div class="d-flex align-items-center me-4">
+                                        <i class="bi bi-badge-wc-fill me-1"></i>
+                                        <i class="{% if cafe['has_toilet'] %}bi bi-check-lg text-success{% else %}bi bi-x-square text-danger{% endif %}"></i>
+                                    </div>    
+                                    <div class="d-flex align-items-center me-4">
+                                        <i class="bi bi-wifi me-1"></i>
+                                        <i class="{% if cafe['has_wifi'] %}bi bi-check-lg text-success{% else %}bi bi-x-square text-danger{% endif %}"></i>
+                                    </div>   
+                                    <div><i class="bi bi-people">   {{ cafe["seats"] }}</i></div>
+                                    <div> {{ cafe["coffee_price"] }}</i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+
+        <!-- Third Column: Google Map -->
+        <div class="col-md-3 align-items-center column-3">
+            <div class="row">
+            <h4 class="pt-3 text-light pb-3">Selected Cafe Location</h4>
+            {% for cafe in selected_cafe_list %}
+                {% if cafe["id"] == selected_cafe_id %}
+                <div class="mb-4 text-light">
+                    <p>{{ cafe["name"] }}<br>{{ cafe["location"] }}</p>
+                    <!-- Embed Google Map -->
+                    <!-- For the purposes of this execise, the map function will be left stale -->
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4965.2377654432485!2d-0.09378639999999999!3d51.5202077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761b56fb64b275%3A0xc756e26675d21f40!2sBarbican%20Centre!5e0!3m2!1sen!2sus!4v1734442620948!5m2!1sen!2sus"
+                        width="100%"
+                        height="300"
+                        frameborder="0"
+                        style="border:0;"
+                        allowfullscreen=""
+                        aria-hidden="false"
+                        tabindex="0"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
